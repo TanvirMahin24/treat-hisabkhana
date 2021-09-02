@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:treat_hisabkhana/main.dart';
 import 'package:treat_hisabkhana/pages/login.dart';
 
 class Home extends StatefulWidget {
@@ -11,6 +12,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isAuth = false;
+
   nextClickFunc(BuildContext ctx) {
     if (isAuth) {
       //ROUTE DASHBOARD

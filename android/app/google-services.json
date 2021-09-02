@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1004103355309",
+    "project_id": "treat-hisabkhana",
+    "storage_bucket": "treat-hisabkhana.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004103355309:android:d3dec37070557be5382f24",
+        "android_client_info": {
+          "package_name": "com.tanvirmahin24.treat_hisabkhana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004103355309-hrnpkh2ich08kgh7cu6ilb7sb9kmlrrr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tanvirmahin24.treat_hisabkhana",
+            "certificate_hash": "cac29aef122d8dd207e2987972802b1958445ac1"
+          }
+        },
+        {
+          "client_id": "1004103355309-3ufrgal7faiec4fnknkpfntkqe17s4cl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZBCwFAX_AnADQNg7jGy5sOZ5Ns0QgXRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004103355309-3ufrgal7faiec4fnknkpfntkqe17s4cl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

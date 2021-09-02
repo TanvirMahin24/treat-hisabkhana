@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(230, 234, 241, 1),
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -101,6 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height * .67,
+                    width: double.infinity,
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
