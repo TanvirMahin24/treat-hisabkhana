@@ -227,10 +227,10 @@ class _HomeState extends State<Home> {
                         textAlign: TextAlign.start,
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 15,
                       ),
                       Text(
-                        "পই পই করে হিসাব রাখুন আপনার সকল ট্রিটের।\nআমাদের এই ব্যতিক্রমি এপ্লিকেশন এর একটি মাত্র উদ্দেশ্য বাদ যাবে না কোন ট্রিট।",
+                        "পই পই করে হিসাব রাখুন আপনার সকল ট্রিটের। আমাদের এই ব্যতিক্রমি এপ্লিকেশন এর একটি মাত্র উদ্দেশ্য বাদ যাবে না কোন ট্রিট।",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.normal,

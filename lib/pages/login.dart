@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height * .25,
               child: const Center(
                 child: Text(
@@ -109,7 +109,8 @@ class _LoginPageState extends State<LoginPage> {
                         topRight: Radius.circular(35),
                       ),
                     ),
-                    child: loginSelected ? LoginForm() : SignupForm(),
+                    child:
+                        loginSelected ? const LoginForm() : const SignupForm(),
                   ),
                 ],
               ),
