@@ -20,6 +20,13 @@ class _SignupFormState extends State<SignupForm> {
   String passwordError = "";
   String nameError = "";
   String usernameError = "";
+  var showImg = "";
+
+  @override
+  void initState() {
+    super.initState();
+    //EXTRA CODE
+  }
 
   googleLogin() async {
     // Trigger the authentication flow
@@ -63,10 +70,21 @@ class _SignupFormState extends State<SignupForm> {
       await auth.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
 
+      //LOGIN
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      //GET DEFAULT IMAGE
+      var defaultImgUrl =
+          await storageRef.child('default.jpg').getDownloadURL();
+
       //CREATE USER IN FIREBASE
-      usersRef.doc().set({
+      await usersRef.doc(userCredential.user!.uid).set({
         "username": usernameController.text,
-        "photoUrl": storageRef.child('default.jpg'),
+        "photoUrl": defaultImgUrl,
         "email": emailController.text,
         "name": nameController.text,
         "bio": "",

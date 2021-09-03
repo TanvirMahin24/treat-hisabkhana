@@ -11,7 +11,7 @@ FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignin = GoogleSignIn();
 User? currentUser;
 final usersRef = FirebaseFirestore.instance.collection('users');
-final Reference storageRef = FirebaseStorage.instance.ref();
+final storageRef = FirebaseStorage.instance.ref();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
