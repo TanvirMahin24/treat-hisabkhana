@@ -64,7 +64,14 @@ class _SignupFormState extends State<SignupForm> {
           email: emailController.text, password: passwordController.text);
 
       //CREATE USER IN FIREBASE
-
+      usersRef.doc().set({
+        "username": usernameController.text,
+        "photoUrl": storageRef.child('default.jpg'),
+        "email": emailController.text,
+        "name": nameController.text,
+        "bio": "",
+        "timestamp": DateTime.now(),
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         setState(() {
