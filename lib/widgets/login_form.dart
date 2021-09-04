@@ -21,9 +21,12 @@ class _LoginFormState extends State<LoginForm> {
   TextEditingController passwordController = TextEditingController();
   String emailErrorText = "";
   bool passwordError = true;
-
+  bool isSubmitting = false;
 
   googleLogin(BuildContext context) async {
+    setState(() {
+      isSubmitting = true;
+    });
     // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
@@ -38,8 +41,26 @@ class _LoginFormState extends State<LoginForm> {
     );
 
     // Once signed in, return the UserCredential
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-        Navigator.of(context).pop();
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    //CREATE USER IN FIREBASE
+    await usersRef.doc(userCredential.user!.uid).get().then((doc) {
+      if (!doc.exists) {
+        doc.reference.set({
+          "username":
+              userCredential.user!.displayName!.replaceAll(RegExp(r"\s+"), ""),
+          "photoUrl": userCredential.user!.photoURL,
+          "email": userCredential.user!.email,
+          "name": userCredential.user!.displayName,
+          "bio": '',
+          "timestamp": DateTime.now(),
+        });
+      }
+    });
+    setState(() {
+      isSubmitting = false;
+    });
+    Navigator.of(context).pop();
   }
 
   // fbLogin() async {
@@ -58,6 +79,9 @@ class _LoginFormState extends State<LoginForm> {
   // twitterLogin() {}
 
   submitForm(BuildContext context) {
+    setState(() {
+      isSubmitting = true;
+    });
     //Validation Logic
     bool isValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -66,11 +90,14 @@ class _LoginFormState extends State<LoginForm> {
     setState(() {
       emailErrorText = isValid ? "" : "Please Enter valid Email address!";
       passwordError = isPassValid;
+      isSubmitting = false;
     });
     if (!isValid || !isPassValid) {
       return;
     }
-
+    setState(() {
+      isSubmitting = false;
+    });
     Navigator.of(context).pop();
 
     //print("::::::::::::::::::SUBMIT:::::::::::::::");
@@ -144,11 +171,12 @@ class _LoginFormState extends State<LoginForm> {
                 horizontal: 50,
                 vertical: 5,
               ),
-              primary: Theme.of(context).primaryColor,
+              primary:
+                  isSubmitting ? Colors.grey : Theme.of(context).primaryColor,
             ),
             onPressed: () => submitForm(context),
-            child: const Text(
-              "Login",
+            child: Text(
+              isSubmitting ? "Loading..." : "Login",
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -172,7 +200,7 @@ class _LoginFormState extends State<LoginForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap:()=> googleLogin(context),
+                onTap: () => googleLogin(context),
                 child: SvgPicture.asset(
                   'images/social/Google.svg',
                 ),

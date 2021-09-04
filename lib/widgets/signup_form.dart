@@ -24,6 +24,7 @@ class _SignupFormState extends State<SignupForm> {
   String nameError = "";
   String usernameError = "";
   var showImg = "";
+  bool isSubmitting = false;
 
   @override
   void initState() {
@@ -32,6 +33,9 @@ class _SignupFormState extends State<SignupForm> {
   }
 
   googleLogin() async {
+    setState(() {
+      isSubmitting = true;
+    });
     //GOOGLE LOGIN
     final GoogleSignInAccount googleUser = await googleSignin.signIn();
 
@@ -61,6 +65,10 @@ class _SignupFormState extends State<SignupForm> {
         });
       }
     });
+    setState(() {
+      isSubmitting = false;
+    });
+    Navigator.of(context).pop();
   }
 
   // fbLogin() async {
@@ -81,7 +89,10 @@ class _SignupFormState extends State<SignupForm> {
 
   // twitterLogin() {}
 
-  submitForm() async {
+  submitForm(BuildContext context) async {
+    setState(() {
+      isSubmitting = true;
+    });
     // Validation Logic
     bool isValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -101,6 +112,7 @@ class _SignupFormState extends State<SignupForm> {
       nameError = isNameValid ? "" : "Name must be at least 4 charecters!";
       usernameError = isUsernameValid ? "" : "Invalid Username!";
       passwordError2 = isPasswordMatched ? "" : "Password do not match!";
+      isSubmitting = false;
     });
 
     // Returning on validation fail
@@ -137,17 +149,23 @@ class _SignupFormState extends State<SignupForm> {
         "bio": "",
         "timestamp": DateTime.now(),
       });
+      setState(() {
+        isSubmitting = false;
+      });
+      Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         setState(() {
           passwordError =
               isPassValid ? "" : "The password provided is too weak.";
+          isSubmitting = false;
         });
         return;
       } else if (e.code == 'email-already-in-use') {
         setState(() {
           emailErrorText =
               isValid ? "" : "The account already exists for that email.";
+          isSubmitting = false;
         });
         return;
       }
@@ -155,6 +173,7 @@ class _SignupFormState extends State<SignupForm> {
     } catch (e) {
       print(e);
     }
+
     //print("::::::::::::::::::SUBMIT:::::::::::::::");
   }
 
@@ -269,11 +288,12 @@ class _SignupFormState extends State<SignupForm> {
                   horizontal: 50,
                   vertical: 5,
                 ),
-                primary: Theme.of(context).primaryColor,
+                primary:
+                    isSubmitting ? Colors.grey : Theme.of(context).primaryColor,
               ),
-              onPressed: () => submitForm(),
-              child: const Text(
-                "Sign Up",
+              onPressed: () => submitForm(context),
+              child: Text(
+                isSubmitting ? "Loading..." : "Sign Up",
                 style: TextStyle(fontSize: 18),
               ),
             ),
