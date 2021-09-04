@@ -28,19 +28,14 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
+            Container(
               height: MediaQuery.of(context).size.height * .25,
+              padding: const EdgeInsets.only(top: 30, bottom: 10),
               child: const Center(
-                child: Text(
-                  "Treat\nHisabKhana",
-                  style: TextStyle(
-                    fontSize: 28,
-                    color: Color.fromRGBO(13, 37, 60, 1),
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+                  child: Image(
+                image: AssetImage('images/intro/Logo1024.png'),
+                height: double.infinity,
+              )),
             ),
             Container(
               height: MediaQuery.of(context).size.height * .75,
