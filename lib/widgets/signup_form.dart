@@ -16,8 +16,10 @@ class _SignupFormState extends State<SignupForm> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordController2 = TextEditingController();
   String emailErrorText = "";
   String passwordError = "";
+  String passwordError2 = "";
   String nameError = "";
   String usernameError = "";
   var showImg = "";
@@ -29,25 +31,42 @@ class _SignupFormState extends State<SignupForm> {
   }
 
   googleLogin() async {
-    // Trigger the authentication flow
+    //GOOGLE LOGIN
     final GoogleSignInAccount googleUser = await googleSignin.signIn();
-    // Obtain the auth details from the request
+
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
-    // Create a new credential
+
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
+
     // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+    //CREATE USER IN FIREBASE
+    await usersRef.doc(userCredential.user!.uid).get().then((doc) {
+      if (!doc.exists) {
+        doc.reference.set({
+          "username":
+              userCredential.user!.displayName!.replaceAll(RegExp(r"\s+"), ""),
+          "photoUrl": userCredential.user!.photoURL,
+          "email": userCredential.user!.email,
+          "name": userCredential.user!.displayName,
+          "bio": '',
+          "timestamp": DateTime.now(),
+        });
+      }
+    });
   }
 
   fbLogin() {}
   twitterLogin() {}
 
   submitForm() async {
-    //Validation Logic
+    // Validation Logic
     bool isValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(emailController.text);
@@ -56,32 +75,44 @@ class _SignupFormState extends State<SignupForm> {
     bool isUsernameValid =
         RegExp(r"^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$")
             .hasMatch(usernameController.text);
+    bool isPasswordMatched =
+        passwordController.text == passwordController2.text;
+
+    // Set state accroding to validation
     setState(() {
       emailErrorText = isValid ? "" : "Please Enter valid Email address!";
       passwordError = isPassValid ? "" : "Weak Password!";
       nameError = isNameValid ? "" : "Name must be at least 4 charecters!";
       usernameError = isUsernameValid ? "" : "Invalid Username!";
+      passwordError2 = isPasswordMatched ? "" : "Password do not match!";
     });
-    if (!isValid || !isPassValid) {
+
+    // Returning on validation fail
+    if (!isValid ||
+        !isPassValid ||
+        !isNameValid ||
+        !isUsernameValid ||
+        !isPasswordMatched) {
       return;
     }
-    //AUTHENTICATION FIREBASE
+
+    // AUTHENTICATION FIREBASE
     try {
       await auth.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
 
-      //LOGIN
+      // LOGIN
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
 
-      //GET DEFAULT IMAGE
+      // GET DEFAULT IMAGE
       var defaultImgUrl =
           await storageRef.child('default.jpg').getDownloadURL();
 
-      //CREATE USER IN FIREBASE
+      // CREATE USER IN FIREBASE
       await usersRef.doc(userCredential.user!.uid).set({
         "username": usernameController.text,
         "photoUrl": defaultImgUrl,
@@ -96,17 +127,19 @@ class _SignupFormState extends State<SignupForm> {
           passwordError =
               isPassValid ? "" : "The password provided is too weak.";
         });
+        return;
       } else if (e.code == 'email-already-in-use') {
         setState(() {
           emailErrorText =
               isValid ? "" : "The account already exists for that email.";
         });
+        return;
       }
       return;
     } catch (e) {
       print(e);
     }
-    print("::::::::::::::::::SUBMIT:::::::::::::::");
+    //print("::::::::::::::::::SUBMIT:::::::::::::::");
   }
 
   @override
@@ -138,7 +171,7 @@ class _SignupFormState extends State<SignupForm> {
               ),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
+              height: MediaQuery.of(context).size.height * 0.01,
             ),
             TextField(
               controller: nameController,
@@ -185,12 +218,31 @@ class _SignupFormState extends State<SignupForm> {
               cursorColor: const Color.fromRGBO(24, 67, 121, 1),
               decoration: InputDecoration(
                 labelText: "Password",
-                errorText: passwordError == "" ? null : "Password too short!",
+                errorText: passwordError == "" ? null : passwordError,
                 labelStyle: const TextStyle(
                   color: Color.fromRGBO(24, 67, 121, 1),
                   fontSize: 16,
                 ),
               ),
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+            ),
+            TextField(
+              keyboardType: TextInputType.visiblePassword,
+              controller: passwordController2,
+              cursorColor: const Color.fromRGBO(24, 67, 121, 1),
+              decoration: InputDecoration(
+                labelText: "Re-type Password",
+                errorText: passwordError2 == "" ? null : passwordError2,
+                labelStyle: const TextStyle(
+                  color: Color.fromRGBO(24, 67, 121, 1),
+                  fontSize: 16,
+                ),
+              ),
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.03,
