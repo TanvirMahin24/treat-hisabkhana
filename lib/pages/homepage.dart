@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:treat_hisabkhana/main.dart';
 import 'package:treat_hisabkhana/pages/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import './dashboard.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -12,6 +14,27 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isAuth = false;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    auth.authStateChanges()
+  .listen((User? user) {
+    if (user == null) {
+      setState(() {
+          isAuth = false;
+        });
+      print('User is currently signed out!');
+    } else {
+      setState(() {
+          isAuth = true;
+        });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Dashboard()));
+    }
+  });
+  }
 
   nextClickFunc(BuildContext ctx) {
     if (isAuth) {
@@ -27,7 +50,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(230, 234, 241, 1),
-      body: Column(
+      body:isAuth?Dashboard() : Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
@@ -216,21 +239,30 @@ class _HomeState extends State<Home> {
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Treat\nHisabKhana",
-                        style: TextStyle(
-                          fontSize: 28,
-                          color: Color.fromRGBO(13, 37, 60, 1),
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text(
+                            "Treat\nHisabKhana",
+                            style: TextStyle(
+                              fontSize: 28,
+                              color: Color.fromRGBO(13, 37, 60, 1),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                          Image(
+                            image: AssetImage('images/intro/LogoTrans.png'),
+                            height: 100,
+                          ),
+                        ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
-                      Text(
-                        "পই পই করে হিসাব রাখুন আপনার সকল ট্রিটের। আমাদের এই ব্যতিক্রমি এপ্লিকেশন এর একটি মাত্র উদ্দেশ্য বাদ যাবে না কোন ট্রিট।",
+                      const Text(
+                        "Manage all the treats in one place.",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.normal,

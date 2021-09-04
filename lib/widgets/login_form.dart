@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:treat_hisabkhana/main.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -20,7 +22,8 @@ class _LoginFormState extends State<LoginForm> {
   String emailErrorText = "";
   bool passwordError = true;
 
-  googleLogin() async {
+
+  googleLogin(BuildContext context) async {
     // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
@@ -35,13 +38,26 @@ class _LoginFormState extends State<LoginForm> {
     );
 
     // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+        Navigator.of(context).pop();
   }
 
-  fbLogin() {}
-  twitterLogin() {}
+  // fbLogin() async {
+  //   final LoginResult loginResult = await fbSignin.login();
 
-  submitForm() {
+  //   // Create a credential from the access token
+  //   final OAuthCredential facebookAuthCredential =
+  //       FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+  //   // Once signed in, return the UserCredential
+  //   UserCredential userCredential = FirebaseAuth.instance
+  //       .signInWithCredential(facebookAuthCredential) as UserCredential;
+  //   return;
+  // }
+
+  // twitterLogin() {}
+
+  submitForm(BuildContext context) {
     //Validation Logic
     bool isValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -55,7 +71,9 @@ class _LoginFormState extends State<LoginForm> {
       return;
     }
 
-    print("::::::::::::::::::SUBMIT:::::::::::::::");
+    Navigator.of(context).pop();
+
+    //print("::::::::::::::::::SUBMIT:::::::::::::::");
   }
 
   @override
@@ -128,7 +146,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
               primary: Theme.of(context).primaryColor,
             ),
-            onPressed: () => submitForm(),
+            onPressed: () => submitForm(context),
             child: const Text(
               "Login",
               style: TextStyle(fontSize: 18),
@@ -154,29 +172,29 @@ class _LoginFormState extends State<LoginForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: googleLogin,
+                onTap:()=> googleLogin(context),
                 child: SvgPicture.asset(
                   'images/social/Google.svg',
                 ),
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.07,
-              ),
-              GestureDetector(
-                onTap: fbLogin,
-                child: SvgPicture.asset(
-                  'images/social/Facebook.svg',
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.07,
-              ),
-              GestureDetector(
-                onTap: twitterLogin,
-                child: SvgPicture.asset(
-                  'images/social/Twitter.svg',
-                ),
-              ),
+              // SizedBox(
+              //   width: MediaQuery.of(context).size.width * 0.07,
+              // ),
+              // GestureDetector(
+              //   onTap: fbLogin,
+              //   child: SvgPicture.asset(
+              //     'images/social/Facebook.svg',
+              //   ),
+              // ),
+              // SizedBox(
+              //   width: MediaQuery.of(context).size.width * 0.07,
+              // ),
+              // GestureDetector(
+              //   onTap: twitterLogin,
+              //   child: SvgPicture.asset(
+              //     'images/social/Twitter.svg',
+              //   ),
+              // ),
             ],
           ),
         ],
