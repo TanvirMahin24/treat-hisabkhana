@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:treat_hisabkhana/main.dart';
 import 'package:treat_hisabkhana/pages/homepage.dart';
 import 'package:treat_hisabkhana/pages/profile.dart';
+import 'package:treat_hisabkhana/widgets/loader.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -56,7 +57,7 @@ class _DashboardState extends State<Dashboard> {
               icon: Icon(Icons.logout),
             ),
             userImg == ""
-                ? Text("")
+                ? circularProgress(context)
                 : GestureDetector(
                     onTap: () => profilePage(context),
                     child: Image(
